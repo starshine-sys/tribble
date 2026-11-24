@@ -3,7 +3,6 @@ package bot
 
 import (
 	"context"
-	"net/http"
 	"sort"
 	"sync"
 	"time"
@@ -15,8 +14,6 @@ import (
 	"github.com/diamondburned/arikawa/v3/utils/handler"
 	"github.com/diamondburned/arikawa/v3/utils/ws"
 	"github.com/getsentry/sentry-go"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/starshine-sys/bcr"
 	bcrbot "github.com/starshine-sys/bcr/bot"
 	bcr2 "github.com/starshine-sys/bcr/v2"
@@ -36,7 +33,6 @@ type Bot struct {
 	Sugar       *zap.SugaredLogger
 	DB          *db.DB
 	Scheduler   *Scheduler
-	Chi         *chi.Mux
 	EmbedColour discord.Color
 
 	GuildLogWebhook *webhook.Client
@@ -86,7 +82,6 @@ func New(
 		DB:          db,
 		Config:      config,
 		PK:          pkgo.New(""),
-		Chi:         chi.NewMux(),
 		EmbedColour: bcr.ColourBlurple,
 
 		members: map[memberKey]member{},
@@ -95,11 +90,6 @@ func New(
 	b.Scheduler = NewScheduler(b, db)
 
 	b.Interactions = bcr2.NewFromShardManager("Bot "+config.Token, bot.Router.ShardManager)
-
-	// set up web router
-	b.Chi.Use(middleware.Recoverer)
-	b.Chi.Use(middleware.Logger)
-	b.Chi.Mount("/static/", staticServer)
 
 	// create a Sentry config
 	if config.SentryURL != "" {
@@ -143,14 +133,14 @@ func New(
 		state.AddHandler(b.interactionCreate)
 
 		// add member update handler (this isn't handled by default apparently?)
-		state.AddHandler(b.guildMemberUpdate)
+		// state.AddHandler(b.guildMemberUpdate)
 
 		// add cache handlers
-		state.AddHandler(b.requestGuildMembers)
-		state.AddHandler(b.guildMemberChunk)
-		state.AddHandler(b.memberUpdateEvent)
-		state.AddHandler(b.memberAddEvent)
-		state.AddHandler(b.memberRemoveEvent)
+		// state.AddHandler(b.requestGuildMembers)
+		// state.AddHandler(b.guildMemberChunk)
+		// state.AddHandler(b.memberUpdateEvent)
+		// state.AddHandler(b.memberAddEvent)
+		// state.AddHandler(b.memberRemoveEvent)
 
 		state.AddHandler(func(ev *ws.BackgroundErrorEvent) {
 			b.Sugar.Errorf("background gateway error: %v", ev.Err)
@@ -206,16 +196,5 @@ func (bot *Bot) PagedEmbed(ctx *bcr.Context, embeds []discord.Embed, timeout tim
 
 // Start wraps around Router.ShardManager.Open()
 func (bot *Bot) Start(ctx context.Context) error {
-	// serve http
-	go func() {
-		for {
-			err := http.ListenAndServe(bot.Config.HTTPListen, bot.Chi)
-			if err != nil {
-				bot.Sugar.Errorf("Error running HTTP server, restarting: %v", err)
-			}
-			time.Sleep(30 * time.Second)
-		}
-	}()
-
 	return bot.Router.ShardManager.Open(ctx)
 }

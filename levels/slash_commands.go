@@ -159,11 +159,6 @@ func (bot *Bot) leaderboardSlash(ctx *bcr.CommandContext) (err error) {
 	name := "Leaderboard for " + ctx.Guild.Name
 
 	embeds := bcr1.StringPaginator(name, bcr1.ColourBlurple, strings, 20)
-	if bot.Config.HTTPBaseURL != "" {
-		for i := range embeds {
-			embeds[i].URL = fmt.Sprintf("%v/leaderboard/%v", bot.Config.HTTPBaseURL, ctx.Guild.ID)
-		}
-	}
 
 	_, _, err = ctx.Paginate(bcr.PaginateEmbeds(embeds...), 15*time.Minute)
 	return err

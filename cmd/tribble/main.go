@@ -3,11 +3,9 @@ package main
 
 import (
 	"context"
-	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
@@ -19,28 +17,23 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/starshine-sys/tribble/approval"
 	"github.com/starshine-sys/tribble/bot"
 	"github.com/starshine-sys/tribble/commands/admin"
 	"github.com/starshine-sys/tribble/commands/config"
 	"github.com/starshine-sys/tribble/commands/moderation"
 	"github.com/starshine-sys/tribble/commands/moderation/notes"
 	"github.com/starshine-sys/tribble/commands/reminders"
-	"github.com/starshine-sys/tribble/commands/roles"
 	"github.com/starshine-sys/tribble/commands/static"
-	"github.com/starshine-sys/tribble/customcommands"
 	"github.com/starshine-sys/tribble/db"
-	"github.com/starshine-sys/tribble/gatekeeper"
 	"github.com/starshine-sys/tribble/keyroles"
 	"github.com/starshine-sys/tribble/levels"
 	"github.com/starshine-sys/tribble/quotes"
 	"github.com/starshine-sys/tribble/reactroles"
 	"github.com/starshine-sys/tribble/starboard"
-	"github.com/starshine-sys/tribble/termora"
-	"github.com/starshine-sys/tribble/tickets"
 )
 
-const intents = bcr.RequiredIntents | gateway.IntentGuildMembers | gateway.IntentGuildVoiceStates | gateway.IntentGuildPresences
+// const intents = bcr.RequiredIntents | gateway.IntentGuildMembers | gateway.IntentGuildVoiceStates | gateway.IntentGuildPresences
+const intents = bcr.RequiredIntents | gateway.IntentGuildVoiceStates
 
 // all of the bot's modules
 var modules = []func(*bot.Bot) (string, []*bcr.Command){
@@ -49,23 +42,15 @@ var modules = []func(*bot.Bot) (string, []*bcr.Command){
 	levels.Init,
 	reactroles.Init,
 	reminders.Init,
-	roles.Init,
 	config.Init,
 	notes.Init,
 	starboard.Init,
-	approval.Init,
 	admin.Init,
-	tickets.Init,
 	keyroles.Init,
 	quotes.Init,
-	termora.Init,
-	customcommands.Init,
-	gatekeeper.Init,
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-
 	// get the config
 	c := getConfig()
 

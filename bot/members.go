@@ -108,10 +108,10 @@ func (bot *Bot) Member(guildID discord.GuildID, userID discord.UserID) (m discor
 
 	bot.membersMu.Lock()
 	defer bot.membersMu.Unlock()
-	bot.members[memberKey{
-		GuildID: guildID,
-		UserID:  userID,
-	}] = member{*gm, guildID}
+	// bot.members[memberKey{
+	// 	GuildID: guildID,
+	// 	UserID:  userID,
+	// }] = member{*gm, guildID}
 	return *gm, nil
 }
 

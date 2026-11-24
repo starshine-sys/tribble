@@ -13,11 +13,6 @@ var DefaultPermissions = Nodes{
 	{"nolevels.*", ModeratorLevel},
 	{"leaderboard", EveryoneLevel},
 
-	// tickets
-	{"tickets.*", EveryoneLevel},
-	{"tickets.config.*", ManagerLevel},
-	{"tickets.list", ManagerLevel},
-
 	// roles
 	{"roles", EveryoneLevel},
 	{"roles.config.*", ManagerLevel},
@@ -79,7 +74,6 @@ var DefaultPermissions = Nodes{
 	{"modlog.export", ManagerLevel},
 	{"modlog.channel", ManagerLevel},
 	{"keyrole.*", ManagerLevel},
-	{"cc.*", ManagerLevel},
 	{"approval.*", ManagerLevel},
 
 	// gatekeeper

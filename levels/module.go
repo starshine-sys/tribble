@@ -23,7 +23,6 @@ func Init(bot *bot.Bot) (s string, list []*bcr.Command) {
 
 	b := &Bot{bot}
 
-	bot.Chi.Get(`/leaderboard/{id:\d+}`, b.webLeaderboard)
 	bot.Router.AddHandler(b.messageCreate)
 
 	bot.Interactions.Command("level/show").Check(func(ctx *bcr2.CommandContext) (err error) {

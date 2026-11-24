@@ -29,8 +29,6 @@ func Init(bot *bot.Bot) (s string, list []*bcr.Command) {
 		mu:  make(map[discord.MessageID]*sync.Mutex),
 	}
 
-	copy(b.AESKey[:], bot.Config.AESKey)
-
 	b.Router.AddHandler(b.reactionAdd)
 
 	cmd := b.Router.AddCommand(&bcr.Command{

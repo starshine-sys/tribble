@@ -23,8 +23,8 @@ func (bot *Bot) leaderboard(ctx *bcr.Context) (err error) {
 		return ctx.SendX("Ranks are disabled on this server.")
 	}
 
-	full, _ := ctx.Flags.GetBool("full")
-	lb, err := bot.getLeaderboard(ctx.Message.GuildID, full)
+	// full, _ := ctx.Flags.GetBool("full")
+	lb, err := bot.getLeaderboard(ctx.Message.GuildID, true)
 	if err != nil {
 		return bot.Report(ctx, err)
 	}
@@ -48,11 +48,6 @@ func (bot *Bot) leaderboard(ctx *bcr.Context) (err error) {
 	name := "Leaderboard for " + ctx.Guild.Name
 
 	embeds := bcr.StringPaginator(name, bcr.ColourBlurple, strings, 20)
-	if bot.Config.HTTPBaseURL != "" {
-		for i := range embeds {
-			embeds[i].URL = fmt.Sprintf("%v/leaderboard/%v", bot.Config.HTTPBaseURL, ctx.Guild.ID)
-		}
-	}
 
 	_, err = bot.PagedEmbed(ctx,
 		embeds,

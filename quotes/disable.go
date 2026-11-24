@@ -3,7 +3,6 @@ package quotes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/starshine-sys/bcr"
 )
@@ -13,7 +12,7 @@ func (bot *Bot) disable(ctx *bcr.Context) (err error) {
 
 	if blocked {
 		yes, timeout := ctx.ConfirmButton(ctx.User().ID, bcr.ConfirmData{
-			Message:   fmt.Sprintf("Quoting is currently **disabled** for your messages. Do you want to opt in again?"),
+			Message:   "Quoting is currently **disabled** for your messages. Do you want to opt in again?",
 			YesPrompt: "Unblock quotes",
 		})
 		if !yes || timeout {
@@ -29,7 +28,7 @@ func (bot *Bot) disable(ctx *bcr.Context) (err error) {
 	}
 
 	yes, timeout := ctx.ConfirmButton(ctx.User().ID, bcr.ConfirmData{
-		Message:   fmt.Sprintf("Quoting is currently **enabled** for your messages. Do you want to opt out?"),
+		Message:   "Quoting is currently **enabled** for your messages. Do you want to opt out?",
 		YesPrompt: "Block quotes",
 	})
 	if !yes || timeout {
